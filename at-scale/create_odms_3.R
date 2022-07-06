@@ -5,11 +5,11 @@
 gasp_offsite <- paste0(.get_config_path("LOCAL_GASPERINI_2019_V2_DATA_DIR"), "at-scale/")
 processed_data_dir <- paste0(gasp_offsite, "processed/")
 processed_gene_dir <- paste0(processed_data_dir, "gene/")
-processed_gRNA_expression_dir <- paste0(processed_data_dir, "grna_expression/")
-processed_gRNA_assignment_dir <- paste0(processed_data_dir, "grna_assignment/")
+processed_grna_expression_dir <- paste0(processed_data_dir, "grna_expression/")
+processed_grna_assignment_dir <- paste0(processed_data_dir, "grna_assignment/")
 
 dirs_to_create <- c(processed_data_dir, processed_gene_dir,
-                    processed_gRNA_expression_dir, processed_gRNA_assignment_dir)
+                    processed_grna_expression_dir, processed_grna_assignment_dir)
 for (dir in dirs_to_create) {
   if (!dir.exists(dir)) dir.create(path = dir, recursive = TRUE)
 }
@@ -52,47 +52,47 @@ if (!file.exists(odm_fp)) {
 }
 
 ###########################
-# 2. gRNA expression matrix
+# 2. grna expression matrix
 ###########################
-# next, load the gRNA count matrix. Write the backing .odm file and metadata file to disk.
-odm_fp <- paste0(processed_gRNA_expression_dir, "matrix.odm")
-metadata_fp <- paste0(processed_gRNA_expression_dir, "metadata.rds")
-gRNA_count_matrix <- readRDS(paste0(intermediate_data_dir, "gRNA_count_matrix.rds"))
-gRNA_feature_covariate_df <-  readRDS(paste0(intermediate_data_dir, "gRNA_feature_covariates.rds"))
+# next, load the grna count matrix. Write the backing .odm file and metadata file to disk.
+odm_fp <- paste0(processed_grna_expression_dir, "matrix.odm")
+metadata_fp <- paste0(processed_grna_expression_dir, "metadata.rds")
+grna_count_matrix <- readRDS(paste0(intermediate_data_dir, "grna_count_matrix.rds"))
+grna_feature_covariate_df <-  readRDS(paste0(intermediate_data_dir, "grna_feature_covariates.rds"))
 
-# confirm that (1) cell barcodes of gRNA exp match those of gene odm, and (2) gRNA barcodes of gRNA exp match those of gRNA_feature_covariate_df
-identical(get_cell_barcodes(gene_odm_plus_pmito_batch), colnames(gRNA_count_matrix))
-identical(gRNA_feature_covariate_df$barcode, rownames(gRNA_count_matrix))
-cell_barcodes <- colnames(gRNA_count_matrix)
-features_df <- data.frame(barcode = gRNA_feature_covariate_df$barcode)
+# confirm that (1) cell barcodes of grna exp match those of gene odm, and (2) grna barcodes of grna exp match those of grna_feature_covariate_df
+identical(get_cell_barcodes(gene_odm_plus_pmito_batch), colnames(grna_count_matrix))
+identical(grna_feature_covariate_df$barcode, rownames(grna_count_matrix))
+cell_barcodes <- colnames(grna_count_matrix)
+features_df <- data.frame(barcode = grna_feature_covariate_df$barcode)
 
-# create the gRNA odm
-gRNA_odm_exp <- create_ondisc_matrix_from_R_matrix(r_matrix = gRNA_count_matrix,
+# create the grna odm
+grna_odm_exp <- create_ondisc_matrix_from_R_matrix(r_matrix = grna_count_matrix,
                                                barcodes = cell_barcodes,
                                                features_df = features_df,
                                                odm_fp = odm_fp,
                                                metadata_fp = metadata_fp)
 
-# modify the feature covariates by adding the gRNA covariate information
-gRNA_feature_covariate_df <- dplyr::mutate(gRNA_feature_covariate_df, barcode = NULL)
-gRNA_odm_exp_mod <- gRNA_odm_exp %>%
-  mutate_feature_covariates(coef_of_variation = NULL, gRNA_feature_covariate_df)
+# modify the feature covariates by adding the grna covariate information
+grna_feature_covariate_df <- dplyr::mutate(grna_feature_covariate_df, barcode = NULL)
+grna_odm_exp_mod <- grna_odm_exp %>%
+  mutate_feature_covariates(coef_of_variation = NULL, grna_feature_covariate_df)
 
 # overwrite metadata file
-save_odm(gRNA_odm_exp_mod, metadata_fp)
+save_odm(grna_odm_exp_mod, metadata_fp)
 
 ############################################
-# 3. gRNA assignment matrix (threshold at 5)
+# 3. grna assignment matrix (threshold at 5)
 ###########################################
-gRNA_assign_matrix <- gRNA_count_matrix >= 5
-odm_fp <- paste0(processed_gRNA_assignment_dir, "matrix.odm")
-metadata_fp <- paste0(processed_gRNA_assignment_dir, "metadata.rds")
-gRNA_odm_assign <- create_ondisc_matrix_from_R_matrix(r_matrix = gRNA_assign_matrix,
+grna_assign_matrix <- grna_count_matrix >= 5
+odm_fp <- paste0(processed_grna_assignment_dir, "matrix.odm")
+metadata_fp <- paste0(processed_grna_assignment_dir, "metadata.rds")
+grna_odm_assign <- create_ondisc_matrix_from_R_matrix(r_matrix = grna_assign_matrix,
                                                       barcodes = cell_barcodes,
                                                       features_df = features_df,
                                                       odm_fp = odm_fp,
                                                       metadata_fp = metadata_fp)
-gRNA_odm_assign_mod <- gRNA_odm_assign %>%
-  mutate_feature_covariates(coef_of_variation = NULL, gRNA_feature_covariate_df)
+grna_odm_assign_mod <- grna_odm_assign %>%
+  mutate_feature_covariates(coef_of_variation = NULL, grna_feature_covariate_df)
 
-save_odm(odm = gRNA_odm_assign_mod, metadata_fp = metadata_fp)
+save_odm(odm = grna_odm_assign_mod, metadata_fp = metadata_fp)
