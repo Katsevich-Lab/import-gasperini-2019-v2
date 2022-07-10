@@ -5,7 +5,7 @@
 gasp_offsite <- paste0(.get_config_path("LOCAL_GASPERINI_2019_V2_DATA_DIR"), "at-scale/")
 processed_data_dir <- paste0(gasp_offsite, "processed/")
 processed_gene_dir_cp <- paste0(processed_data_dir, "gene_cp/")
-if (!dir.exists(processed_gene_dir_cp)) dir.create(path = dir, recursive = TRUE)
+if (!dir.exists(processed_gene_dir_cp)) dir.create(path = processed_gene_dir_cp, recursive = TRUE)
 
 # set raw directories
 raw_data_dir <- paste0(gasp_offsite, "raw/")
