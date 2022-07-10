@@ -83,7 +83,7 @@ save_odm(grna_odm_exp_mod, metadata_fp)
 
 ############################################
 # 3. grna assignment matrix (threshold at 5)
-###########################################
+############################################
 grna_assign_matrix <- grna_count_matrix >= 5
 odm_fp <- paste0(processed_grna_assignment_dir, "matrix.odm")
 metadata_fp <- paste0(processed_grna_assignment_dir, "metadata.rds")
