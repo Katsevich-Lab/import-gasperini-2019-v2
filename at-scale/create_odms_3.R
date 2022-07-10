@@ -68,10 +68,10 @@ features_df <- data.frame(barcode = grna_feature_covariate_df$barcode)
 
 # create the grna odm
 grna_odm_exp <- create_ondisc_matrix_from_R_matrix(r_matrix = grna_count_matrix,
-                                               barcodes = cell_barcodes,
-                                               features_df = features_df,
-                                               odm_fp = odm_fp,
-                                               metadata_fp = metadata_fp)
+                                                   barcodes = cell_barcodes,
+                                                   features_df = features_df,
+                                                   odm_fp = odm_fp,
+                                                   metadata_fp = metadata_fp)
 
 # modify the feature covariates by adding the grna covariate information
 grna_feature_covariate_df <- dplyr::mutate(grna_feature_covariate_df, barcode = NULL)
