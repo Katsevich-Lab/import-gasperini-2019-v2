@@ -1,1 +1,0 @@
-Rscript load_chunks_serial.R
