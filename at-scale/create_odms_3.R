@@ -62,6 +62,7 @@ grna_feature_covariate_df <-  readRDS(paste0(intermediate_data_dir, "grna_featur
 
 # confirm that (1) cell barcodes of grna exp match those of gene odm, and (2) grna barcodes of grna exp match those of grna_feature_covariate_df
 identical(get_cell_barcodes(gene_odm_plus_pmito_batch), colnames(grna_count_matrix))
+grna_count_matrix <- grna_count_matrix[grna_feature_covariate_df$barcode,]
 identical(grna_feature_covariate_df$barcode, rownames(grna_count_matrix))
 cell_barcodes <- colnames(grna_count_matrix)
 features_df <- data.frame(barcode = grna_feature_covariate_df$barcode)
