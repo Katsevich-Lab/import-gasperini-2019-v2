@@ -74,5 +74,5 @@ pos_control_grna_group_to_target_gene_df <- grna_result_table |>
 
 # perform a join operation to create a data frame with columns grna ID (barcode), target (the chromosomal position that a grna targets), target_type, pos_control_gene (for positive controls, the targeted gene), and grna_group
 grna_group_tbl <- dplyr::left_join(grna_group_to_target_df, pos_control_grna_group_to_target_gene_df, by = "grna_group")
-grna_feature_covariates <- dplyr::left_join(grna_id_to_group_df, grna_group_tbl,by = "grna_group")
+grna_feature_covariates <- dplyr::left_join(grna_group_tbl, grna_id_to_group_df, by = "grna_group")
 saveRDS(grna_feature_covariates, paste0(intermediate_data_dir, "grna_feature_covariates.rds"))
